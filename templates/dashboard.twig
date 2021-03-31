@@ -21,6 +21,10 @@
 				<div class='top-border'></div>
 				<div class='name'><b>Helpful Links</b></div>
 			</a>
+			<a class="tab nonactive" id="siteManagement-button" onclick="activateTab('siteManagement');">
+				<div class='top-border'></div>
+				<div class='name'><b>Site Management</b></div>
+			</a>
 		</div>
 	</div>
 	{#<div class='row' style="height:1px"></div>#}
@@ -410,6 +414,11 @@
 				<small>Check back soon to find a list of helpful resources!</small>
 			{% endif %}
 		</div>
+	</div>
+	<div id="siteManagement">
+		{# blue bar #}
+		<div class="blue_bar"></div>
+		
 	</div>
 </div>
 {% endblock %}
