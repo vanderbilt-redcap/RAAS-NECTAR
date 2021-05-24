@@ -89,14 +89,14 @@ function getSelectedValue() {
 			//if match from dropdown and json in config show results
 			if (region === filterValue) {
 				$(this).show();
-			}		
+			}
+			//hide class if there is data
+			$('.no-sites').hide();
 		});
 		//if there is no match display string statement 
 		if (!$('.region').is(':visible')) {
-			$('.first_row').eq(1).empty().after('<tr><td colspan="5">Sorry, no sites</td></tr>');
-			return false;
-		}
-
+			$('tbody:first').append('<tr class="no-sites"><td colspan="5">Sorry, no sites</td></tr>');
+		} 
 	})
 }
 
