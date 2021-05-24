@@ -31,7 +31,8 @@ class RAAS_NECTAR extends \ExternalModules\AbstractExternalModule {
 		'transfusion_datetime',
 		'randomization_date',
 		'randomization',
-		'transfusion_given'
+		'transfusion_given',
+		'class'
 	];
 	
 	protected const MAX_FOLDER_NAME_LEN = 60;		// folder names truncated after 48 characters
@@ -69,23 +70,23 @@ class RAAS_NECTAR extends \ExternalModules\AbstractExternalModule {
 			$EDCProject = new \Project($project_id);
 			$dags_unique = $EDCProject->getUniqueGroupNames();
 			$dags_display = $EDCProject->getGroups();
+
 			$dags = new \stdClass();
 			foreach ($dags_unique as $group_id => $unique_name) {
 				// get display name
 				if (empty($display_name = $dags_display[$group_id]))
 					$display_name = "";
+
 				
 				// add entry with unique and display name with group_id as key
 				$dags->$group_id = new \stdClass();
 				$dags->$group_id->unique = $unique_name;
 				$dags->$group_id->display = $display_name;
-				
 				unset($display_name);
 			}
-			
+
 			$this->dags = $dags;
 		}
-		
 		return $this->dags;
 	}
 
@@ -136,12 +137,11 @@ class RAAS_NECTAR extends \ExternalModules\AbstractExternalModule {
 				];
 				$uad_data = json_decode(\REDCap::getData($params));
 
-			
+				
 			}
 
 			$this->uad_data = $uad_data;
 		}
-		
 		return $this->uad_data;
 	}
 
@@ -157,10 +157,9 @@ class RAAS_NECTAR extends \ExternalModules\AbstractExternalModule {
 				'return_format' => 'json',
 				'fields' => $this->record_fields,
 				'events' => (array) $this->event_ids,
-                'exportDataAccessGroups' => true
+                'exportDataAccessGroups' => true,
 			];
 			$edc_data = json_decode(\REDCap::getData($params));
-
 			$projectDags = $this->getDAGs($project_id);
 
 			// add dag property to each based on its record_id
@@ -169,6 +168,7 @@ class RAAS_NECTAR extends \ExternalModules\AbstractExternalModule {
 				    if($thisDag->unique == $record->redcap_data_access_group) {
                         $record->dag = $groupId;
                         $record->dag_name = $thisDag->display;
+						$record->class = $thisDag->region;
                         break;
                     }
                 }
@@ -176,7 +176,8 @@ class RAAS_NECTAR extends \ExternalModules\AbstractExternalModule {
 
 			$this->edc_data = $edc_data;
 		}
-		
+		// print_array($this->edc_data);
+
 		return $this->edc_data;
 	}
 
@@ -258,6 +259,7 @@ class RAAS_NECTAR extends \ExternalModules\AbstractExternalModule {
                 $project_id = $_GET['pid'];
             }
 			$this->getEDCData($project_id);
+
 			
 			$records = [];
 			$temp_records_obj = new \stdClass();
@@ -265,8 +267,10 @@ class RAAS_NECTAR extends \ExternalModules\AbstractExternalModule {
 				'project_id' => $project_id
 			];
 
+
 			// iterate over edc_data, collating data into record objects
 			foreach ($this->edc_data as $record_event) {
+
 				// establish $record and $rid
 				$rid = $record_event->record_id;
 				if (!$record = $temp_records_obj->$rid) {
@@ -276,7 +280,7 @@ class RAAS_NECTAR extends \ExternalModules\AbstractExternalModule {
 					foreach ($this->record_fields as $field) {
 						$record->$field = "";
 					}
-					
+			
 					$record->record_id = $rid;
 					$temp_records_obj->$rid = $record;
 				}
@@ -285,7 +289,6 @@ class RAAS_NECTAR extends \ExternalModules\AbstractExternalModule {
 				foreach ($this->record_fields as $field) {
 					if (!empty($record_event->$field)) {
 						$labels = $this->getFieldLabelMapping($field);
-
 						if($labels) {
 							$record->$field = $labels[$record_event->$field];
 						}
@@ -297,18 +300,21 @@ class RAAS_NECTAR extends \ExternalModules\AbstractExternalModule {
 						if($field == "sex") {
 							$record->$field = substr($record->$field, 0, 1);
 						}
+
+						
 					}
+
 				}
+
 			}
 			
 			foreach ($temp_records_obj as $record) {
 				if (!empty($record->redcap_data_access_group))
 					$records[] = $record;
 			}
-			
+
 			$this->records = $records;
 		}
-		
 		return $this->records;
 	}
 	public function getMySiteData() {
@@ -371,7 +377,10 @@ class RAAS_NECTAR extends \ExternalModules\AbstractExternalModule {
 		}
 		$this->getDAGs();
 		$this->getRecords();
-		
+
+		// print_array($this->getDAGs());
+
+		//print_array($this->getDAGs());
 		$data = new \stdClass();
 		$data->totals = json_decode('[
 			{
@@ -390,13 +399,11 @@ class RAAS_NECTAR extends \ExternalModules\AbstractExternalModule {
 			}
 		]');
 		$data->sites = [];
-		
 		// create temporary sites container
 		$sites = new \stdClass();
 		foreach ($this->records as $record) {
 			if (!$patient_dag = $record->dag)
 				continue;
-
 			// get or make site object
 			if (!$site = $sites->$patient_dag) {
 				$sites->$patient_dag = new \stdClass();
@@ -406,6 +413,8 @@ class RAAS_NECTAR extends \ExternalModules\AbstractExternalModule {
 				$site->treated = 0;
 				$site->fpe = '-';
 				$site->lpe = '-';
+				$site->class= $record->class;
+				
 			}
 			
 			// update using patient data
@@ -434,14 +443,17 @@ class RAAS_NECTAR extends \ExternalModules\AbstractExternalModule {
 				$data->totals[1]->treated++;
 				$site->treated = $site->treated + 1;
 			}
+
+			
 		}
 		
 		// site objects updated with patient data, dump into $data->sites
 		// effectively removing keys and keeping values in array
 		foreach ($sites as $site) {
 			$data->sites[] = $site;
+			
 		}
-		
+
 		// sort all sites, enrolled ascending
 		if (!function_exists(__NAMESPACE__ . '\sortAllSitesData')) {
 			function sortAllSitesData($a, $b) {

@@ -7,12 +7,14 @@ require_once(__DIR__ . "/RAAS_NECTAR.php");
 class TrialSupportDash extends \Vanderbilt\TrialSupportDash\RAAS_NECTAR
 {
 
-	public function getEDCData($projectId = false)
+	public function getExclusionData($projectId = false)
 	{
-		if (!$this->screening_data) {
+
+	
 			if (!$projectId) {
 				$projectId = $_GET['pid'];
 			}
+			
 			//we are getting instrument name
 			$instrument_name = "inclusionexclusion";
 			//getting all fields in that instrument
@@ -37,13 +39,82 @@ class TrialSupportDash extends \Vanderbilt\TrialSupportDash\RAAS_NECTAR
 				"exportDataAccessGroups" => true,				
 			]));
 
-			
-		}
-		
+	
 		
 		return $this->data;
 	}
 
+	public function getRegions($project_id){
+
+		$region_array = [];
+
+	
+		//getting json text area from config
+		$getJsonSetting = $this->getProjectSetting('json_text_dag');
+		//change from json to array 
+		$dag_array = json_decode($getJsonSetting, TRUE);
+		//loop to set array to region and save at config
+		foreach ($dag_array as $group_id => $unique_name) {
+			$region_array[$group_id] = $unique_name['region'];
+		}
+		 return $region_array;
+	}
+
+	public function getDAGs($project_id = false)
+	{
+		if (!isset($this->dags)) {
+			if (!$project_id) {
+				$project_id = $_GET['pid'];
+			}
+
+			// create global $Proj that REDCap class uses to generate DAG info
+			$EDCProject = new \Project($project_id);
+			$dags_unique = $EDCProject->getUniqueGroupNames();
+			$dags_display = $EDCProject->getGroups();
+			$regions = $this->getRegions($project_id);
+
+			$dags = new \stdClass();
+			foreach ($dags_unique as $group_id => $unique_name) {
+				// get display name
+				if (empty($display_name = $dags_display[$group_id]))
+				$display_name = "";
+
+				if (empty($regions_name = $regions[$group_id]))
+				$regions_name = "";
+
+				// add entry with unique and display name with group_id as key
+				$dags->$group_id = new \stdClass();
+				$dags->$group_id->unique = $unique_name;
+				$dags->$group_id->display = $display_name;
+				$dags->$group_id->region = $regions_name;
+
+				unset($display_name);
+			}
+			
+			$this->dags = $dags;
+		}
+		return $this->dags;
+	}
+
+
+	public function setDagsSetting()
+	{
+		$this->getDAGs();
+		
+		$json_dags = $this->getDAGs();
+		return $this->setProjectSetting('json_text_dag', json_encode($json_dags, JSON_PRETTY_PRINT));
+
+	}
+
+	public function getDagsSetting(){
+		$dags_json = json_decode($this->getProjectSetting('json_text_dag'));
+
+		$dag_region = [];
+		foreach($dags_json as $value){
+			$dag_region[] = $value->region;			
+		}
+		 return $dag_region;
+	}
 
 
 	//new function to get the key 
@@ -64,6 +135,9 @@ class TrialSupportDash extends \Vanderbilt\TrialSupportDash\RAAS_NECTAR
 		return $exclusion_field_key;
 
 	}
+
+	
+
 	
 	public function getExclusionReportData()
 	{
@@ -74,7 +148,7 @@ class TrialSupportDash extends \Vanderbilt\TrialSupportDash\RAAS_NECTAR
 
 			$exclusionCount = array();
 
-			$data = $this->getEDCData();
+			$data = $this->getExclusionData();
 			$exclusionSetting = $this->getProjectSettingExclusion();
 			foreach($exclusionSetting as $i => $field_name){
 				$exclusionCount[$i] = 0;

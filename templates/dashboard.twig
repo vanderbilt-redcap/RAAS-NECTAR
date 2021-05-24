@@ -5,9 +5,18 @@
 <script type="text/javascript">
     var startTab = "{{ use_screening ? "allSitesData" : "links" }}";
 </script>
-    
+ 
+<select name="region" id="region">
+	<option value="">Select Region</option>
+	<option value="Southeast">Southeast</option>
+	<option value="Southwest">Southwest</option>
+	<option value="West">West</option>
+	<option value="Midwest">Midwest</option>
+	<option value="Northeast">Northeast</option>
+</select>
 <div id="tabs" style="width:100%; float:left; margin-top:5px;">
 	<div class='row'>
+
 		<div id="event-tabs" style="background-color:#ffffff; margin-left:0px;text-align:left">
             {% if use_screening %}
             <a class="tab active" id="allSitesData-button" onclick="activateTab('allSitesData');">
@@ -66,8 +75,8 @@
 					<td style="background-color: {{constant("SECONDARY_BAR_BACKGROUND_COLOR")}};"></td>
 				</tr>
 				{% for siteDetails in allSites["sites"] %}
-					<tr>
-						<td>{{ siteDetails["name"] }}</td>
+					<tr class="region" data-region="{{ siteDetails["class"] }}">
+						<td >{{ siteDetails["name"] }}</td>
 						<td>{{ siteDetails["enrolled"] }}</td>
 						<td>{{ siteDetails["treated"] }}</td>
 						<td>{{ siteDetails["fpe"] }}</td>

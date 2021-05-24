@@ -146,6 +146,7 @@
 				}
 			]
 		},
+	
 		{
 			"key": "custom_accent_colors",
 			"name": "Custom accent colors for dashboard",
@@ -212,6 +213,11 @@
 
 				}
 			]
+		},
+		{
+			"key": "json_text_dag",
+			"name": "json text of DAGs",
+			"type": "textarea"
 		}
 	],
 	"system-settings": [],

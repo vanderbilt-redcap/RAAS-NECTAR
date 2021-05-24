@@ -16,7 +16,6 @@ if($screeningLog) {
 	$allSitesData = $module->getAllSitesData();
 	$mySitesData = $module->getMySiteData();
 	$authorized = $module->user->authorized;
-	
 	// prepare site names for Screening Log Report dropdown
 	$site_names = [];
 	if ($authorized == 3) {
@@ -26,7 +25,8 @@ if($screeningLog) {
 	} else {
 		$site_names[] = $module->user->dag_group_name;
 	}
-	
+	$setDagSettings = $module->setDagsSetting();
+	$getDagSettings = $module->getDagsSetting();
 	$screeningLogData = $module->getScreeningLogData();
 	$exclusionData = $module->getExclusionReportData();
 	$screenFailData = $module->getScreenFailData();
@@ -43,6 +43,7 @@ echo $template->render([
 	"use_screening" => $screeningLog,
 	"use_site_activation" => $siteActivation,
 	"allSites" => $allSitesData,
+	"regionClass" => $regionClass,
 	"mySite" => $mySitesData,
 	"authorized" => $authorized,
 	"site_names" => $site_names,
