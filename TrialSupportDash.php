@@ -6,50 +6,51 @@ require_once(__DIR__ . "/RAAS_NECTAR.php");
 
 class TrialSupportDash extends \Vanderbilt\TrialSupportDash\RAAS_NECTAR
 {
-	
+
 
 	public function getExclusionData($projectId = false)
 	{
 
-	
-			if (!$projectId) {
-				$projectId = $_GET['pid'];
-			}
-			
-			//we are getting instrument name
-			$instrument_name = "inclusionexclusion";
-			//getting all fields in that instrument
-			$inclusionexclusionFields = \REDCap::getFieldNames($instrument_name);
 
-			$OnlyExclusion = [];
-			//make array that have name exclusion_ 
-			foreach($inclusionexclusionFields as $field){
-				if (strpos($field, "exclusion_") !== false ) {
-					$OnlyExclusion[] = $field;
-				}
-			}
-			//remove fist element do not need
-			 array_shift($OnlyExclusion);
-			 //remove last element do not need
-			 array_pop($OnlyExclusion);  
-			//get data just from that instrument
-			$this->data = json_decode(\REDCap::getData([
-				"project_id" => $projectId,
-				"return_format" => "json",
-				"fields" => $OnlyExclusion,
-				"exportDataAccessGroups" => true,				
-			]));
+		if (!$projectId) {
+			$projectId = $_GET['pid'];
+		}
 
-	
-		
+		//we are getting instrument name
+		$instrument_name = "inclusionexclusion";
+		//getting all fields in that instrument
+		$inclusionexclusionFields = \REDCap::getFieldNames($instrument_name);
+
+		$OnlyExclusion = [];
+		//make array that have name exclusion_ 
+		foreach ($inclusionexclusionFields as $field) {
+			if (strpos($field, "exclusion_") !== false) {
+				$OnlyExclusion[] = $field;
+			}
+		}
+		//remove fist element do not need
+		array_shift($OnlyExclusion);
+		//remove last element do not need
+		array_pop($OnlyExclusion);
+		//get data just from that instrument
+		$this->data = json_decode(\REDCap::getData([
+			"project_id" => $projectId,
+			"return_format" => "json",
+			"fields" => $OnlyExclusion,
+			"exportDataAccessGroups" => true,
+		]));
+
+
+
 		return $this->data;
 	}
 
-	public function getRegions($project_id){
+	public function getRegions($project_id)
+	{
 
 		$region_array = [];
 
-	
+
 		//getting json text area from config
 		$getJsonSetting = $this->getProjectSetting('json_text_dag');
 		//change from json to array 
@@ -58,7 +59,7 @@ class TrialSupportDash extends \Vanderbilt\TrialSupportDash\RAAS_NECTAR
 		foreach ($dag_array as $group_id => $unique_name) {
 			$region_array[$group_id] = $unique_name['region'];
 		}
-		 return $region_array;
+		return $region_array;
 	}
 
 	public function getDAGs($project_id = false)
@@ -78,10 +79,10 @@ class TrialSupportDash extends \Vanderbilt\TrialSupportDash\RAAS_NECTAR
 			foreach ($dags_unique as $group_id => $unique_name) {
 				// get display name
 				if (empty($display_name = $dags_display[$group_id]))
-				$display_name = "";
+					$display_name = "";
 
 				if (empty($regions_name = $regions[$group_id]))
-				$regions_name = "";
+					$regions_name = "";
 
 				// add entry with unique and display name with group_id as key
 				$dags->$group_id = new \stdClass();
@@ -91,7 +92,7 @@ class TrialSupportDash extends \Vanderbilt\TrialSupportDash\RAAS_NECTAR
 
 				unset($display_name);
 			}
-			
+
 			$this->dags = $dags;
 		}
 		return $this->dags;
@@ -101,20 +102,20 @@ class TrialSupportDash extends \Vanderbilt\TrialSupportDash\RAAS_NECTAR
 	public function setDagsSetting()
 	{
 		$this->getDAGs();
-		
+
 		$json_dags = $this->getDAGs();
 		return $this->setProjectSetting('json_text_dag', json_encode($json_dags, JSON_PRETTY_PRINT));
-
 	}
 
-	public function getDagsSetting(){
+	public function getDagsSetting()
+	{
 		$dags_json = json_decode($this->getProjectSetting('json_text_dag'));
 
 		$dag_region = [];
-		foreach($dags_json as $value){
-			$dag_region[] = $value->region;			
+		foreach ($dags_json as $value) {
+			$dag_region[] = $value->region;
 		}
-		 return $dag_region;
+		return $dag_region;
 	}
 
 
@@ -133,12 +134,11 @@ class TrialSupportDash extends \Vanderbilt\TrialSupportDash\RAAS_NECTAR
 			}
 		}
 		return $exclusion_field_key;
-
 	}
 
-	
 
-	
+
+
 	public function getExclusionReportData()
 	{
 		if (!isset($this->exclusion_data)) {
@@ -159,9 +159,9 @@ class TrialSupportDash extends \Vanderbilt\TrialSupportDash\RAAS_NECTAR
 				//change to array to compare
 				$obj = get_object_vars($record);
 				//looping through exclusion settings
-				foreach($exclusionSetting as $key => $value){
+				foreach ($exclusionSetting as $key => $value) {
 					//if data equal 1 get all items and increment 
-					if($obj[$key] === '1'){
+					if ($obj[$key] === '1') {
 						$exclusionCount[$key]++;
 					}
 				}
@@ -186,11 +186,8 @@ class TrialSupportDash extends \Vanderbilt\TrialSupportDash\RAAS_NECTAR
 			}
 
 			$this->exclusion_data = $exclusion_data;
-
-						
 		}
 		return $this->exclusion_data;
-
 	}
 
 	public function getCustomColors()

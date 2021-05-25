@@ -221,7 +221,7 @@
 		},
 		{
 			"key": "json_text_dag",
-			"name": "json text of DAGs",
+			"name": "json text of DAGs, Key: (West, Southwest, Southeast, Northeast, Midwest) ",
 			"type": "textarea"
 		}
 	],
