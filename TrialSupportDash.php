@@ -143,8 +143,6 @@ class TrialSupportDash extends \Vanderbilt\TrialSupportDash\RAAS_NECTAR
 				'fields' => 'race_eth'
 			];
 
-
-
 			$params = [
 				'project_id' => $project_id,
 				'return_format' => 'json',
@@ -155,14 +153,25 @@ class TrialSupportDash extends \Vanderbilt\TrialSupportDash\RAAS_NECTAR
 			];
 			$edc_data = json_decode(\REDCap::getData($params));
 			$projectDags = $this->getDAGs($project_id);
-			$test = [];
-			// add dag property to each based on its record_id			
+			// add dag property to each based on its record_id		
 			foreach ($edc_data as $record) {
 				$removeComma = explode(",", $record->race_eth);
-				
+
 				$record->race_eth = $removeComma[0];
-			
+
+				if ($record->redcap_data_access_group == '') {
+					$record->redcap_data_access_group = 'dcri_call_center';
+					
+				}
+
+
 				foreach ($projectDags as $groupId => $thisDag) {
+					if ($record->redcap_data_access_group == 'dcri_call_center') {
+						$record->dag = '100000';
+						$record->dag_name = 'DCRI Call Center';
+						$record->class = $thisDag->region;
+						break;
+					}
 					if ($thisDag->unique == $record->redcap_data_access_group) {
 						$record->dag = $groupId;
 						$record->dag_name = $thisDag->display;
@@ -171,7 +180,6 @@ class TrialSupportDash extends \Vanderbilt\TrialSupportDash\RAAS_NECTAR
 					}
 				}
 			}
-
 			$this->edc_data = $edc_data;
 		}
 		return $this->edc_data;
@@ -192,7 +200,7 @@ class TrialSupportDash extends \Vanderbilt\TrialSupportDash\RAAS_NECTAR
 				$project_id = $_GET['pid'];
 			}
 			$this->getEDCData($project_id);
-
+			
 			$records = [];
 			$temp_records_obj = new \stdClass();
 			$label_params = [
@@ -202,11 +210,6 @@ class TrialSupportDash extends \Vanderbilt\TrialSupportDash\RAAS_NECTAR
 
 			// iterate over edc_data, collating data into record objects
 			foreach ($this->edc_data as $record_event) {
-
-				// print_array($record_event);
-
-			
-
 				// establish $record and $rid
 				$rid = $record_event->record_id;
 				if (!$record = $temp_records_obj->$rid) {
@@ -237,7 +240,7 @@ class TrialSupportDash extends \Vanderbilt\TrialSupportDash\RAAS_NECTAR
 
 						## Special shortening for certain fields
 						if ($field == "sex") {
-							$record->$field = substr($record->$field, 0, 1);
+							$record->$field;
 						}
 					}
 				}
@@ -262,8 +265,6 @@ class TrialSupportDash extends \Vanderbilt\TrialSupportDash\RAAS_NECTAR
 		$this->getDAGs();
 		$this->getRecords();
 
-		// print_array($this->getDAGs());
-
 		//print_array($this->getDAGs());
 		$data = new \stdClass();
 		$data->totals = json_decode('[
@@ -286,7 +287,6 @@ class TrialSupportDash extends \Vanderbilt\TrialSupportDash\RAAS_NECTAR
 		// create temporary sites container
 		$sites = new \stdClass();
 		foreach ($this->records as $record) {
-
 			if (!$patient_dag = $record->dag)
 				continue;
 			// get or make site object

@@ -98,8 +98,7 @@
 				{% endif %}
 				<th style="background-color: {{constant("BAR_BACKGROUND_COLOR")}};color: {{constant("TEXT_COLOR")}};">Sex</th>
 				<th style="background-color: {{constant("BAR_BACKGROUND_COLOR")}};color: {{constant("TEXT_COLOR")}};">Race</th>
-				<th style="background-color: {{constant("BAR_BACKGROUND_COLOR")}};color: {{constant("TEXT_COLOR")}};">Enrolled</th>
-				<th style="background-color: {{constant("BAR_BACKGROUND_COLOR")}};color: {{constant("TEXT_COLOR")}};">Treated</th>
+				<th style="background-color: {{constant("BAR_BACKGROUND_COLOR")}};color: {{constant("TEXT_COLOR")}};">Randomized</th>
 			</tr>
 			</thead>
 			<tbody>
@@ -111,7 +110,6 @@
 					{% endif %}
 					<td>{{ personDetails["sex"] }}</td>
 					<td>{{ personDetails["race"] }}</td>
-					<td>{{ personDetails["enrolled"] }}</td>
 					<td>{{ personDetails["treated"] }}</td>
 				</tr>
 			{% endfor %}
