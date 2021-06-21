@@ -250,7 +250,7 @@ class TrialSupportDash extends \Vanderbilt\TrialSupportDash\RAAS_NECTAR
 									$comma[$raw_key] = $labels[$raw_value];
 								}
 								
-								$record_event->$field = $comma;
+								$record_event->$field = implode(', ', $comma);
 
 
 								$record->$field = $record_event->$field;
