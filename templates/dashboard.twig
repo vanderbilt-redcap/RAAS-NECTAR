@@ -3,7 +3,7 @@
 {% block content %}
 
 <script type="text/javascript">
-    var startTab = "{{ use_screening ? "allSitesData" : "links" }}";
+    var startTab = "{{ use_screening ? "allSitesData" : "allSitesData" }}";
 </script>
  
 <select name="region" id="region">
@@ -18,7 +18,7 @@
 	<div class='row'>
 
 		<div id="event-tabs" style="background-color:#ffffff; margin-left:0px;text-align:left">
-            {% if use_screening %}
+            
             <a class="tab active" id="allSitesData-button" onclick="activateTab('allSitesData');">
 				<div class='top-border' style="background-color: {{constant("BAR_BACKGROUND_COLOR")}};"></div>
 				<div class='name'><b>Enrollment Statistics</b></div>
@@ -31,14 +31,13 @@
 				<div class='top-border' style="background-color: {{constant("BAR_BACKGROUND_COLOR")}};"></div>
 				<div class='name'><b>Screening</b></div>
 			</a>
-            {% endif %}
+           
 			<a class="tab {{ use_screening ? "nonactive" : "active "}}" id="links-button" onclick="activateTab('links');">	<div class='top-border' style="background-color: {{constant("BAR_BACKGROUND_COLOR")}};"></div>
 				<div class='name'><b>Helpful Links</b></div>
 			</a>
 		</div>
 	</div>
 	{#<div class='row' style="height:1px"></div>#}
-    {% if use_screening %}
 	<div id="allSitesData">
 		<table>
 			<thead>
@@ -385,7 +384,7 @@
 			</div>
 		</div>
 	</div>
-    {% endif %}
+
 	<div id="links">
 		{# blue bar #}
 		<div class="blue_bar" style="background-color: {{constant("BAR_BACKGROUND_COLOR")}};"></div>

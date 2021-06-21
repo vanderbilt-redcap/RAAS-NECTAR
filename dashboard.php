@@ -12,7 +12,8 @@ $template = $twig->load("dashboard.twig");
 $siteActivation = $module->getProjectSetting("use_site_activation");
 $screeningLog = $module->getProjectSetting("use_screening");
 
-if($screeningLog) {
+	
+
 	$allSitesData = $module->getAllSitesData();
 	$mySitesData = $module->getMySiteData();
 	$authorized = $module->user->authorized;
@@ -30,7 +31,7 @@ if($screeningLog) {
 	$screeningLogData = $module->getScreeningLogData();
 	$exclusionData = $module->getExclusionReportData();
 	$screenFailData = $module->getScreenFailData();
-}
+
 
 $clipboardImageSource = $module->getUrl("images/clipboard.PNG");
 $folderImageSource = $module->getUrl("images/folder.png");
