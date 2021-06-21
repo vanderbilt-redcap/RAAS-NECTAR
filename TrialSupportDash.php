@@ -245,17 +245,11 @@ class TrialSupportDash extends \Vanderbilt\TrialSupportDash\RAAS_NECTAR
 							if (\REDCap::getFieldType($field) == 'checkbox') {
 								//seperate each value by comma
 								$comma = explode(',', $record_event->$field);
-								
-								foreach ($comma as $raw_key => $raw_value) {
-									$comma[$raw_key] = $labels[$raw_value];
-								}
-								
-								$record_event->$field = implode(', ', $comma);
-
 								//loop each comma and match key with label
 								foreach ($comma as $raw_key => $raw_value) {
 									$comma[$raw_key] = $labels[$raw_value];
 								}
+							
 								//each comma value has label and we seperate by comma
 								$record_event->$field = implode(', ', $comma);
 
