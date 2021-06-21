@@ -470,12 +470,6 @@ class RAAS_NECTAR extends \ExternalModules\AbstractExternalModule
 	}
 	public function getScreeningLogData($site = null)
 	{
-		// // currently not caching this function
-		// if (!isset($this->screening_log_data)) {
-
-		// }
-
-		// return $this->screening_log_data;
 
 		// determine earliest screened date (upon which weeks array will be based)
 		$screening_data = $this->getScreeningData();
