@@ -2,6 +2,8 @@
 
 namespace Vanderbilt\TrialSupportDash;
 
+use stdClass;
+
 require_once(__DIR__ . "/RAAS_NECTAR.php");
 
 class TrialSupportDash extends \Vanderbilt\TrialSupportDash\RAAS_NECTAR
@@ -20,19 +22,18 @@ class TrialSupportDash extends \Vanderbilt\TrialSupportDash\RAAS_NECTAR
 		foreach ($configFields as $key => $field_name) {
 			$configFields = array_values($field_name);
 			$record_fields = array_merge($this->record_fields, $configFields);
-			
 		}
 
-		
 		return $record_fields;
 	}
 
 
 	
 
+
 	public function getFieldLabelMapping($fieldName = false)
 	{
-	
+
 		if (!isset($this->mappings)) {
 			$this->mappings = [];
 			foreach ($this->mergeRecordFields() as $thisField) {
@@ -41,14 +42,13 @@ class TrialSupportDash extends \Vanderbilt\TrialSupportDash\RAAS_NECTAR
 					$this->mappings[$thisField] = $choices;
 				}
 			}
-		}		
-		
+		}
 
 		if ($fieldName) {
-			if (isset($this->mappings[$fieldName])) {
 
+			if(isset($this->mappings[$fieldName])){
 				return $this->mappings[$fieldName];
-			} else {
+			}else{
 				return false;
 			}
 		} else {
@@ -129,6 +129,14 @@ class TrialSupportDash extends \Vanderbilt\TrialSupportDash\RAAS_NECTAR
 		return $dag_region;
 	}
 
+	public function Merge_Objects($object1, $object2)
+	{
+		$Obj1 = (array) $object1;
+		$Obj2 = (array) $object2;
+		$merged = array_merge_recursive($Obj1, $Obj2);
+		return (object) $merged;
+	}
+
 
 	public function getEDCData($project_id = false)
 	{
@@ -138,10 +146,7 @@ class TrialSupportDash extends \Vanderbilt\TrialSupportDash\RAAS_NECTAR
 			}
 			$this->getEventIDs();
 			$fields = $this->mergeRecordFields();
-			$params = [
-				'project_id' => $project_id,
-				'fields' => 'race_eth'
-			];
+		
 
 			$params = [
 				'project_id' => $project_id,
@@ -150,18 +155,19 @@ class TrialSupportDash extends \Vanderbilt\TrialSupportDash\RAAS_NECTAR
 				//'events' => $this->event_ids,
 				'combine_checkbox_values' => true,
 				'exportDataAccessGroups' => true,
+
 			];
 			$edc_data = json_decode(\REDCap::getData($params));
 			$projectDags = $this->getDAGs($project_id);
 			// add dag property to each based on its record_id		
+			$checkboxRecords = [];
 			foreach ($edc_data as $record) {
-				$removeComma = explode(",", $record->race_eth);
 
-				$record->race_eth = $removeComma[0];
+			
+
 
 				if ($record->redcap_data_access_group == '') {
 					$record->redcap_data_access_group = 'dcri_call_center';
-					
 				}
 
 
@@ -182,8 +188,10 @@ class TrialSupportDash extends \Vanderbilt\TrialSupportDash\RAAS_NECTAR
 			}
 			$this->edc_data = $edc_data;
 		}
+		// print_array($this->edc_data);
 		return $this->edc_data;
 	}
+
 
 
 	public function getRecords($project_id = false)
@@ -207,9 +215,12 @@ class TrialSupportDash extends \Vanderbilt\TrialSupportDash\RAAS_NECTAR
 				'project_id' => $project_id
 			];
 
-
+			$race = [];
 			// iterate over edc_data, collating data into record objects
 			foreach ($this->edc_data as $record_event) {
+				
+		
+
 				// establish $record and $rid
 				$rid = $record_event->record_id;
 				if (!$record = $temp_records_obj->$rid) {
@@ -222,37 +233,86 @@ class TrialSupportDash extends \Vanderbilt\TrialSupportDash\RAAS_NECTAR
 
 					$record->record_id = $rid;
 					$temp_records_obj->$rid = $record;
-
+					/// here is where it adds elements 
 					
 				}
-
+				$race = [];
 				// set non-empty fields
 				foreach ($this->mergeRecordFields() as $field) {
 					
-					if (!empty($record_event->$field)) {
-
+					if(!empty($record_event->$field)){
 						$labels = $this->getFieldLabelMapping($field);
 						if ($labels) {
-							$record->$field = $labels[$record_event->$field];
-						} else {
-							$record->$field = $record_event->$field;
-						}
+							if (\REDCap::getFieldType($field) == 'checkbox') {
+								$comma = explode(',', $record_event->$field);
+								$record_event->$field = $comma;
 
-						## Special shortening for certain fields
-						if ($field == "sex") {
-							$record->$field;
-						}
+
+								$record->$field = $record_event->$field;
+
+								// print_array($record->$field);
+								foreach($labels as $key => $value){
+									foreach ($record_event->$field as $races) {
+										
+								// 		if($key == $races){
+								// 			// $record->$field = $labels[$races];
+
+
+								// 			// print_array($record_event->$field);
+								// 			// $record_event->$field = $key;
+								// 			//  $record->{$field} = $labels[$key];
+								// 			// print_array($record->$field);
+								// 			// // $record->newValue = $labels[$key];
+								// 			// array_push($record_event->$field, $labels[$races]);
+								// 		}
+								
+								 	}
+								 }
+
+							}else{
+								$record->$field = $labels[$record_event->$field];
+
+							}
+							
+						} else{
+							$record->$field = $record_event->$field;
+						}				
+
 					}
+					
+					// if (!empty($record_event->$field)) {
+					// 	// print_array($record_event->$field);
+					// 	$labels = $this->getFieldLabelMapping($field);
+					// 	if ($labels) {
+					// 		$record->$field = $labels[$record_event->$field];
+					// 	} 				
+					// 	else {
+
+					// 		$record->$field = $record_event->$field;
+					// 	}
+
+					// 	## Special shortening for certain fields
+					// 	if ($field == "sex") {
+					// 		$record->$field;
+					// 	}
+					// }
 				}
+
+
 			}
 
 			foreach ($temp_records_obj as $record) {
-				if (!empty($record->redcap_data_access_group))
+				if (!empty($record->redcap_data_access_group)){
+					
 					$records[] = $record;
+				
+
+				}
 			}
 
 			$this->records = $records;
 		}
+		print_array($this->records);
 		return $this->records;
 	}
 
@@ -375,9 +435,14 @@ class TrialSupportDash extends \Vanderbilt\TrialSupportDash\RAAS_NECTAR
 					$row->site = $record->dag_name;
 				}
 				$row->sex = $record->sex;
-				$row->race = $record->ethnic . ' ' . $record->race_eth;
+				// $row->race = $record->ethnic;
+				
+				$row->race = $record->race_eth;
+				
+				
+				// print_array($record);
+				// $row->a = $record->a;
 				$row->enrolled = $record->drug_receive_pro;
-				//$row->race_eth = $record->race_eth;
 				$row->treated = "";
 				// convert transfusion_datetime from Y-m-d H:m to Y-m-d
 				if (!empty($record->randomization_time))
