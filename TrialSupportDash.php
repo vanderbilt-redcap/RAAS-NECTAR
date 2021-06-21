@@ -188,7 +188,6 @@ class TrialSupportDash extends \Vanderbilt\TrialSupportDash\RAAS_NECTAR
 			}
 			$this->edc_data = $edc_data;
 		}
-		// print_array($this->edc_data);
 		return $this->edc_data;
 	}
 
@@ -244,30 +243,20 @@ class TrialSupportDash extends \Vanderbilt\TrialSupportDash\RAAS_NECTAR
 						$labels = $this->getFieldLabelMapping($field);
 						if ($labels) {
 							if (\REDCap::getFieldType($field) == 'checkbox') {
+								//seperate each value by comma
 								$comma = explode(',', $record_event->$field);
 								$record_event->$field = $comma;
 
+								//loop each comma and match key with label
+								foreach ($comma as $raw_key => $raw_value) {
+									$comma[$raw_key] = $labels[$raw_value];
+								}
+								//each comma value has label and we seperate by comma
+								$record_event->$field = implode(', ', $comma);
 
+								//to checkbox field with label
 								$record->$field = $record_event->$field;
 
-								// print_array($record->$field);
-								foreach($labels as $key => $value){
-									foreach ($record_event->$field as $races) {
-										
-								// 		if($key == $races){
-								// 			// $record->$field = $labels[$races];
-
-
-								// 			// print_array($record_event->$field);
-								// 			// $record_event->$field = $key;
-								// 			//  $record->{$field} = $labels[$key];
-								// 			// print_array($record->$field);
-								// 			// // $record->newValue = $labels[$key];
-								// 			// array_push($record_event->$field, $labels[$races]);
-								// 		}
-								
-								 	}
-								 }
 
 							}else{
 								$record->$field = $labels[$record_event->$field];
@@ -280,22 +269,7 @@ class TrialSupportDash extends \Vanderbilt\TrialSupportDash\RAAS_NECTAR
 
 					}
 					
-					// if (!empty($record_event->$field)) {
-					// 	// print_array($record_event->$field);
-					// 	$labels = $this->getFieldLabelMapping($field);
-					// 	if ($labels) {
-					// 		$record->$field = $labels[$record_event->$field];
-					// 	} 				
-					// 	else {
-
-					// 		$record->$field = $record_event->$field;
-					// 	}
-
-					// 	## Special shortening for certain fields
-					// 	if ($field == "sex") {
-					// 		$record->$field;
-					// 	}
-					// }
+				
 				}
 
 
@@ -312,7 +286,6 @@ class TrialSupportDash extends \Vanderbilt\TrialSupportDash\RAAS_NECTAR
 
 			$this->records = $records;
 		}
-		print_array($this->records);
 		return $this->records;
 	}
 
@@ -325,7 +298,6 @@ class TrialSupportDash extends \Vanderbilt\TrialSupportDash\RAAS_NECTAR
 		$this->getDAGs();
 		$this->getRecords();
 
-		//print_array($this->getDAGs());
 		$data = new \stdClass();
 		$data->totals = json_decode('[
 			{
@@ -438,10 +410,7 @@ class TrialSupportDash extends \Vanderbilt\TrialSupportDash\RAAS_NECTAR
 				// $row->race = $record->ethnic;
 				
 				$row->race = $record->race_eth;
-				
-				
-				// print_array($record);
-				// $row->a = $record->a;
+		
 				$row->enrolled = $record->drug_receive_pro;
 				$row->treated = "";
 				// convert transfusion_datetime from Y-m-d H:m to Y-m-d
