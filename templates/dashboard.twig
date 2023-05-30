@@ -42,8 +42,8 @@
 				</div>
 			</div>
 		</div>
-		<div class="row" style="width: 100%;">
-			<div class="col-6 has_enrollment_table">
+		<div class="row mb-4" style="width: 100%;">
+			<div class="col-12 has_enrollment_table">
 				<table class="dashboard">
 					<thead>
 						<tr>
@@ -135,8 +135,11 @@
 				</table>
 			</div>
 			{# chart #}
-			<div class="col-6 chart-container" style="position: relative; height: 72vh; width: 50vw">
-				<canvas id="enrollment_chart"></canvas>
+			<div class="col-12 chart-container">
+				<div class="chartAreaWrapper">
+					<div class="chartTitle">Enrollments By Week</div> 
+					<canvas id="enrollment_chart" width="2880" height="500" ></canvas>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -843,7 +846,6 @@
 				display: true,
 				fontSize: 24,
 				fontStyle: 'normal',
-				text: 'Enrollments By Week'
 			},
 			scales: {
 				xAxes: [{
@@ -902,9 +904,18 @@
 				},
 				// onClick: {} //disable default legend click behavior
 			},
-			responsive: true,
+			animation:{
+				onComplete : function(){
+					console.dir(week_labels);
+					let sourceCanvas = this.chart.ctx.canvas;
+					//let copyWidth  = this.scale.xScalePaddingLeft - 5;
+					//let copyHeight = this.scale.endPoint + 5;
+					//alert('Finish');
+				}
+			},
+			responsive: false,
 			responsiveAnimationDuration: 50,
-			maintainAspectRatio: false
+			maintainAspectRatio: true
 		}
 	});
 	{# TODO Keep cumulative dataset but completely hide it from the user apart from in tooltips. #}
