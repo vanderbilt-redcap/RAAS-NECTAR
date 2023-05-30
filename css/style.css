@@ -180,7 +180,7 @@ button.main_page {
 }
 
 /* helpful links */
-#links .folders {
+/*#links .folders {
 	display: flex;
 }
 #links .folders .folder {
@@ -201,7 +201,12 @@ button.main_page {
 	left: 10%;
 	max-width: 80%;
 	max-height: 45%;
+}*/
+
+#links .folder {
+	cursor: pointer;
 }
+
 #links div.links {
 	display: flex;
 }

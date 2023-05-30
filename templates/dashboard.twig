@@ -4,6 +4,7 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
+
 <div id="tabs" style="width:100%; float:left; margin-top:5px;">
 	<div class='row'>
 		<div id="event-tabs" style="background-color:#ffffff; margin-left:0px;text-align:left">
@@ -452,7 +453,7 @@
 		<button class="close-folder btn btn-info">Return to folders</button>
 		<div class="row links">
 			{% for link in helpfulLinks %}
-				<div class="card" data-folder-index="{{ link.folder_index }}">
+				<div class="col" data-folder-index="{{ link.folder_index }}">
 					<div class="row" style="align-items: center;">
 						<div class="rank">
 							<span>#{{ loop.index }}</span>
@@ -466,15 +467,21 @@
 						<button class="clipboard"><img src="{{ clipboardImageSource }}"></button>
 						<small>Copy URL to clipboard</small>
 					</div>
-				</div class="card">
+				</div>
 			{% endfor %}
 		</div>
 		<div class="row folders" style="justify-content: center;">
 			{% for folder in helpfulLinkFolders %}
-				<div class="folder" data-index="{{ loop.index }}">
-					<img src="{{ folderImageSource }}" alt="Folder of links named '{{ folder.name }}'" style="background: {{folder.color}};"/>
-					<div class="centered">
-						<p>{{ folder.name }}</p>
+				<div 
+					class="folder col-2 position-relative m-1  d-flex align-items-center justify-content-center" 
+					data-index="{{ loop.index }}"
+					style = "background-image: url({{ folderImageSource }});
+					background-color: {{folder.color}};
+					background-size: cover;
+					height: 240px";
+				>
+					<div>
+						<p class="mb-0 mt-2">{{ folder.name }}</p>
 						<p>{{ folder.linkCount }} Links</p>
 					</div>
 				</div>
