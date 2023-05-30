@@ -1,6 +1,8 @@
 {% extends "base.twig" %}
 
 {% block content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
 <div id="tabs" style="width:100%; float:left; margin-top:5px;">
 	<div class='row'>
@@ -32,7 +34,7 @@
 		<div class="blue_bar col-12"></div>
 		<div>
 			<div class="dropdown p-2">
-				<button class="btn btn-primary dropdown-toggle" type="button" id="site_locality_dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				<button class="btn btn-primary dropdown-toggle" type="button" id="site_locality_dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					Site Locality: Global
 				</button>
 				<div class="dropdown-menu" aria-labelledby="site_locality_dropdown">
@@ -496,7 +498,7 @@
 			{% endfor %}
 			<div class="row">
 				<div class="dropdown active-site-select">
-					<button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						Select a site
 					</button>
 					<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -903,15 +905,6 @@
 					}
 				},
 				// onClick: {} //disable default legend click behavior
-			},
-			animation:{
-				onComplete : function(){
-					console.dir(week_labels);
-					let sourceCanvas = this.chart.ctx.canvas;
-					//let copyWidth  = this.scale.xScalePaddingLeft - 5;
-					//let copyHeight = this.scale.endPoint + 5;
-					//alert('Finish');
-				}
 			},
 			responsive: false,
 			responsiveAnimationDuration: 50,
