@@ -453,7 +453,7 @@
 		<button class="close-folder btn btn-info">Return to folders</button>
 		<div class="row links">
 			{% for link in helpfulLinks %}
-				<div class="col" data-folder-index="{{ link.folder_index }}">
+				<div class="col m-2" data-folder-index="{{ link.folder_index }}">
 					<div class="row" style="align-items: center;">
 						<div class="rank">
 							<span>#{{ loop.index }}</span>
@@ -463,9 +463,13 @@
 					<div class="row" style="margin: 12px 0px;">
 						<a href="{{ link.url }}"class="link_url">{{ link.url }}</a>
 					</div>
-					<div class="row" style="align-items: center;">
-						<button class="clipboard"><img src="{{ clipboardImageSource }}"></button>
-						<small>Copy URL to clipboard</small>
+					<div class="row">
+						<div class="col-4 text-end">
+							<button class="clipboard"><img src="{{ clipboardImageSource }}"></button>
+						</div>	
+						<div class="col-8 text-start">	
+							<small>Copy URL to clipboard</small>
+						</div>	
 					</div>
 				</div>
 			{% endfor %}
@@ -481,8 +485,8 @@
 					height: 240px";
 				>
 					<div>
-						<p class="mb-0 mt-2">{{ folder.name }}</p>
-						<p>{{ folder.linkCount }} Links</p>
+						<p class="mb-0 mt-4 text-center">{{ folder.name }}</p>
+						<p class="text-center">{{ folder.linkCount }} Links</p>
 					</div>
 				</div>
 			{% endfor %}
