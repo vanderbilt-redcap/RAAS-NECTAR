@@ -534,7 +534,7 @@
 					</div>
 				{% endif %}
 			{% endfor %}
-			<div class="row">
+			<div class="row justify-content-center">
 				<div class="dropdown active-site-select">
 					<button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						Select a site
@@ -546,7 +546,7 @@
 					</div>
 				</div>
 				{% if siteCompletionData %}
-					<button class="btn btn-primary active-site-select" style="margin-left:30px" onclick="$('#activation_completion_report').show();$('#activation_sites').hide();">View Site Completion Report</button>
+					<button class="btn btn-primary active-site-select" style="margin-left:30px;  max-width: 300px;" onclick="$('#activation_completion_report').show();$('#activation_sites').hide();">View Site Completion Report</button>
 				{% endif %}
 			</div>
 			<div class="row">
