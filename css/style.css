@@ -22,6 +22,7 @@
 }
 #event-tabs .tab .name {
     border-right: 2px solid #f1f2f3;
+	cursor: pointer;
 }
 #event-tabs .tab:hover {
     color: black;
@@ -338,7 +339,6 @@ div.ref_fields {
 	width: 90%;
 	margin: 0 auto;
 	overflow-x: scroll;
-	scrollbar-color: red yellow;
 }
 .chart-container {
 	margin-bottom:100px;

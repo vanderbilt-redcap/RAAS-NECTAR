@@ -60,7 +60,7 @@ function clickedFolder(clickEvent) {
 	// unhide links div
 	$("#links div.links").show();
 	$("#links button.close-folder").show();
-	$("#links div.links .card").each(function(i, link_element) {
+	$("#links div.links .cardlink").each(function(i, link_element) {
 		var this_link = $(link_element);
 		if (this_link.attr("data-folder-index") == folder_index) {
 			this_link.show();
@@ -161,7 +161,7 @@ $("document").ready(function() {
 	
 	// make copy to clipboard buttons work
 	$("body").on("mousedown touchstart", "button.clipboard", function() {
-		var url_span = $(this).closest("div.card").find('a.link_url')
+		var url_span = $(this).closest("div.cardlink").find('a.link_url')
 		copyToClipboard(url_span);
 	});
 	

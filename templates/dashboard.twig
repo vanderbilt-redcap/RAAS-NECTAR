@@ -222,67 +222,99 @@
 				</div>
 				{# chart #}
 				<div class="col-6">
-					<canvas id="screening_log_chart" width="400" height="400"></canvas>
-					<script>
-						var week_labels = [
-							{% for row in screeningLog.rows|slice(0,-1) %}
-								'{{ row.0 }}',
-							{% endfor %}
-						];
-						var data1 = [
-							{% for row in screeningLog.rows|slice(0,-1) %}
-								{{ row.1 }},
-							{% endfor %}
-						];
-						var data2 = [
-							{% for row in screeningLog.rows|slice(0,-1) %}
-								{{ row.2 }},
-							{% endfor %}
-						];
-						var ctx = document.getElementById('screening_log_chart').getContext('2d');
-						var screening_log_chart = new Chart(ctx, {
-							type: 'bar',
-							data: {
-								labels: week_labels,
-								datasets: [{
-									label: 'Participants Screened',
-									data: data1,
-									{# backgroundColor: 'rgba(255, 99, 132, 0.2)', #}
-									borderColor: 'rgba(13, 127, 133, 1)',
-									borderWidth: 2,
-									type: 'line',
-									datalabels: {
-										anchor: 'center'
+					<div class="chartAreaWrapper w-100">
+						<div class="chartTitle">Participant Screening</div> 
+							<canvas id="screening_log_chart" width="2880" height="600"></canvas>
+							<script>
+								var week_labels = [
+									{% for row in screeningLog.rows|slice(0,-1) %}
+										'{{ row.0 }}',
+									{% endfor %}
+								];
+								var data1 = [
+									{% for row in screeningLog.rows|slice(0,-1) %}
+										{{ row.1 }},
+									{% endfor %}
+								];
+								var data2 = [
+									{% for row in screeningLog.rows|slice(0,-1) %}
+										{{ row.2 }},
+									{% endfor %}
+								];
+								var ctx = document.getElementById('screening_log_chart').getContext('2d');
+								var screening_log_chart = new Chart(ctx, {
+									type: 'bar',
+									data: {
+										labels: week_labels,
+										datasets: [{
+											label: 'Participants Screened',
+											data: data1,
+											{# backgroundColor: 'rgba(255, 99, 132, 0.2)', #}
+											borderColor: 'rgba(13, 127, 133, 1)',
+											borderWidth: 2,
+											type: 'line',
+											datalabels: {
+												anchor: 'center'
+											}
+										},{
+											label: 'Cumulative Screened',
+											data: data2,
+											backgroundColor: 'rgba(180, 199, 231, 1)',
+											borderWidth: 1,
+											datalabels: {
+												offset: 12
+											}
+										}]
+									},
+									options: {
+										title: {
+											display: true,
+											fontSize: 24,
+											fontStyle: 'normal',
+										},
+										scales: {
+											xAxes: [{
+												ticks: {
+													autoSkip: false,
+													maxRotation: 90,
+													minRotation: 90
+												}
+											}],
+											yAxes: [{
+												ticks: {
+													beginAtZero: true
+												}
+											}]
+										},
+										maintainAspectRatio: true,
+										responsive: false,
+									},
+									onAnimationComplete: new function () {
+										console.dir(Chart);
+										const ctx = Chart;
+										
+										/*ctx.font = this.scale.font;
+										ctx.fillStyle = this.scale.textColor
+										ctx.textAlign = "center";
+										ctx.textBaseline = "bottom";*/
+
+										const lineHeigt = ctx.measureText('M').width;
+
+										this.datasets.forEach(function(dataset) {
+											dataset.bars.forEach(function(bar) {
+												ctx.save();
+												ctx.translate(bar.x + (lineHeigt / 3 * 2), bar.y + 30)
+												ctx.rotate(-Math.PI / 2);
+												ctx.fillText(bar.value, 0, 0);
+												ctx.restore();
+											});
+										})
 									}
-								},{
-									label: 'Cumulative Screened',
-									data: data2,
-									backgroundColor: 'rgba(180, 199, 231, 1)',
-									borderWidth: 1,
-									datalabels: {
-										offset: 12
-									}
-								}]
-							},
-							options: {
-								title: {
-									display: true,
-									fontSize: 24,
-									fontStyle: 'normal',
-									text: 'Participant Screening'
-								},
-								scales: {
-									yAxes: [{
-										ticks: {
-											beginAtZero: true
-										}
-									}]
-								}
-							}
-						});
-					</script>
+								});
+							</script>
+						</div>	
+					</div>
 				</div>
-			</div>
 		</div>
 		<div class="screening_report" id="exclusion">
 			<div class="row">
@@ -453,7 +485,7 @@
 		<button class="close-folder btn btn-info">Return to folders</button>
 		<div class="row links">
 			{% for link in helpfulLinks %}
-				<div class="col m-2" data-folder-index="{{ link.folder_index }}">
+				<div class="col cardlink m-2" data-folder-index="{{ link.folder_index }}">
 					<div class="row" style="align-items: center;">
 						<div class="rank">
 							<span>#{{ loop.index }}</span>
