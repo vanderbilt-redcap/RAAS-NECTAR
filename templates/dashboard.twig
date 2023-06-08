@@ -288,6 +288,19 @@
 										},
 										maintainAspectRatio: true,
 										responsive: false,
+										plugins: {
+											datalabels: {
+												anchor: 'end',
+												align: 'top',
+												rotation: -90,
+												font: {
+													size: 12
+												},
+												formatter: function(value, context) {
+													return value;
+												}
+											}
+										}
 									},
 									onAnimationComplete: new function () {
 
