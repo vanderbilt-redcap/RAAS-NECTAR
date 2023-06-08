@@ -222,8 +222,8 @@
 				</div>
 				{# chart #}
 				<div class="col-6">
+					<div class="chartTitle">Participant Screening</div>
 					<div class="chartAreaWrapper w-100">
-						<div class="chartTitle">Participant Screening</div> 
 							<canvas id="screening_log_chart" width="2880" height="600"></canvas>
 							<script>
 								var week_labels = [
@@ -290,25 +290,7 @@
 										responsive: false,
 									},
 									onAnimationComplete: new function () {
-										console.dir(Chart);
-										const ctx = Chart;
-										
-										/*ctx.font = this.scale.font;
-										ctx.fillStyle = this.scale.textColor
-										ctx.textAlign = "center";
-										ctx.textBaseline = "bottom";*/
 
-										const lineHeigt = ctx.measureText('M').width;
-
-										this.datasets.forEach(function(dataset) {
-											dataset.bars.forEach(function(bar) {
-												ctx.save();
-												ctx.translate(bar.x + (lineHeigt / 3 * 2), bar.y + 30)
-												ctx.rotate(-Math.PI / 2);
-												ctx.fillText(bar.value, 0, 0);
-												ctx.restore();
-											});
-										})
 									}
 								});
 							</script>
